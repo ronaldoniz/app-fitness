@@ -286,6 +286,11 @@ qualquer deploy** para manter a aderência ao SRS. Depois de reativá-la, use um
 caixa postal de teste real para repetir os fluxos de confirmação e recuperação
 de senha.
 
+O `Site URL` ainda não está configurado no projeto hospedado. Antes do deploy,
+configure-o com a origem de `APP_URL` e mantenha essa origem na lista de
+redirects; sem isso, os callbacks de confirmação e recuperação não podem ser
+homologados de forma confiável.
+
 Nenhuma credencial do projeto remoto é versionada e nenhum deploy é realizado
 nesta fase.
 
