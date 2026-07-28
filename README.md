@@ -272,9 +272,22 @@ Recuperação:
 {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/redefinir-senha
 ```
 
-Quando um projeto remoto existir, as migrations poderão ser aplicadas pelo
-fluxo oficial da CLI após autenticar e vincular explicitamente esse projeto.
-Nenhum vínculo remoto ou deploy é realizado nesta fase.
+### Registro operacional da Fase 11A
+
+As migrations foram aplicadas manualmente no projeto Supabase hospedado e
+`supabase/verification.sql` foi executado sem erros aparentes. A validação
+integrada confirmou cadastro, login, uso do aplicativo e exportações CSV e JSON
+com dados reais de teste.
+
+Durante essa validação, a confirmação de e-mail foi desativada temporariamente
+porque o provedor de Auth bloqueou o envio por excesso de solicitações. Essa é
+uma exceção operacional exclusiva do teste: **reative `Confirm email` antes de
+qualquer deploy** para manter a aderência ao SRS. Depois de reativá-la, use uma
+caixa postal de teste real para repetir os fluxos de confirmação e recuperação
+de senha.
+
+Nenhuma credencial do projeto remoto é versionada e nenhum deploy é realizado
+nesta fase.
 
 ### Preparação futura da Vercel
 
