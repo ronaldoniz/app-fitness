@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+:root {
+  --background: #07111f;
+  --foreground: #e5edf7;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-mono:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-wrap: break-word;
+}
+
+::selection {
+  background: rgb(52 211 153 / 35%);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 3px solid #6ee7b7;
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  transform: translateY(-200%);
+  border-radius: 0.75rem;
+  background: #34d399;
+  padding: 0.75rem 1rem;
+  color: #07111f;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition: transform 150ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.break-anywhere {
+  overflow-wrap: anywhere;
+}
+
+.form-input {
+  min-height: 3rem;
+  width: 100%;
+  border: 1px solid #64748b;
+  border-radius: 0.75rem;
+  background: rgb(15 23 42 / 78%);
+  padding: 0.75rem 0.875rem;
+  color: #f8fafc;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+.form-input:hover {
+  border-color: #94a3b8;
+}
+
+.form-input:focus {
+  border-color: #6ee7b7;
+  background: rgb(15 23 42 / 95%);
+  outline: none;
+}
+
+.form-input:focus-visible {
+  outline: 3px solid rgb(110 231 183 / 40%);
+  outline-offset: 2px;
+}
+
+.private-theme {
+  --private-background: #07111f;
+  --private-header: rgb(2 6 23 / 55%);
+  --private-heading: #ffffff;
+  --private-text-strong: #e2e8f0;
+  --private-text: #cbd5e1;
+  --private-text-muted: #94a3b8;
+  --private-text-subtle: #64748b;
+  --private-surface: rgb(255 255 255 / 3.5%);
+  --private-surface-hover: rgb(255 255 255 / 5%);
+  --private-border: rgb(255 255 255 / 10%);
+  --private-border-hover: rgb(255 255 255 / 20%);
+  --private-track: #1e293b;
+  --private-input: rgb(15 23 42 / 78%);
+  --private-input-focus: rgb(15 23 42 / 95%);
+  --private-input-border: #64748b;
+  --private-input-border-hover: #94a3b8;
+  --private-accent-text: #6ee7b7;
+  --private-sky-text: #bae6fd;
+  --private-danger-text: #fecaca;
+  --private-warning-text: #fef3c7;
+  --chart-grid: rgb(255 255 255 / 9%);
+  --chart-point-background: #07111f;
+  color-scheme: dark;
+  background: var(--private-background);
+}
+
+.private-theme[data-theme="light"] {
+  --private-background: #f5f7fa;
+  --private-header: rgb(255 255 255 / 86%);
+  --private-heading: #0f172a;
+  --private-text-strong: #1e293b;
+  --private-text: #334155;
+  --private-text-muted: #475569;
+  --private-text-subtle: #64748b;
+  --private-surface: rgb(255 255 255 / 78%);
+  --private-surface-hover: rgb(15 23 42 / 6%);
+  --private-border: rgb(15 23 42 / 13%);
+  --private-border-hover: rgb(15 23 42 / 25%);
+  --private-track: #dbe3ec;
+  --private-input: rgb(255 255 255 / 92%);
+  --private-input-focus: #ffffff;
+  --private-input-border: #64748b;
+  --private-input-border-hover: #475569;
+  --private-accent-text: #047857;
+  --private-sky-text: #0369a1;
+  --private-danger-text: #b91c1c;
+  --private-warning-text: #92400e;
+  --chart-grid: rgb(15 23 42 / 13%);
+  --chart-point-background: #ffffff;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  .private-theme[data-theme="system"] {
+    --private-background: #f5f7fa;
+    --private-header: rgb(255 255 255 / 86%);
+    --private-heading: #0f172a;
+    --private-text-strong: #1e293b;
+    --private-text: #334155;
+    --private-text-muted: #475569;
+    --private-text-subtle: #64748b;
+    --private-surface: rgb(255 255 255 / 78%);
+    --private-surface-hover: rgb(15 23 42 / 6%);
+    --private-border: rgb(15 23 42 / 13%);
+    --private-border-hover: rgb(15 23 42 / 25%);
+    --private-track: #dbe3ec;
+    --private-input: rgb(255 255 255 / 92%);
+    --private-input-focus: #ffffff;
+    --private-input-border: #64748b;
+    --private-input-border-hover: #475569;
+    --private-accent-text: #047857;
+    --private-sky-text: #0369a1;
+    --private-danger-text: #b91c1c;
+    --private-warning-text: #92400e;
+    --chart-grid: rgb(15 23 42 / 13%);
+    --chart-point-background: #ffffff;
+    color-scheme: light;
+  }
+}
+
+.private-header {
+  background: var(--private-header);
+}
+
+.private-theme .text-white {
+  color: var(--private-heading);
+}
+
+.private-theme [class*="text-slate-200"] {
+  color: var(--private-text-strong);
+}
+
+.private-theme [class*="text-slate-300"],
+.private-theme [class*="text-slate-400"] {
+  color: var(--private-text);
+}
+
+.private-theme [class*="text-slate-500"] {
+  color: var(--private-text-muted);
+}
+
+.private-theme [class*="text-emerald-"] {
+  color: var(--private-accent-text);
+}
+
+.private-theme [class*="text-sky-"] {
+  color: var(--private-sky-text);
+}
+
+.private-theme [class*="text-red-"] {
+  color: var(--private-danger-text);
+}
+
+.private-theme [class*="text-amber-"] {
+  color: var(--private-warning-text);
+}
+
+.private-theme .theme-keep-white {
+  color: #ffffff;
+}
+
+.private-theme [class*="bg-white/"] {
+  background-color: var(--private-surface);
+}
+
+.private-theme [class*="bg-slate-950/"] {
+  background-color: var(--private-surface);
+}
+
+.private-theme [class*="hover:bg-white/"]:hover {
+  background-color: var(--private-surface-hover);
+}
+
+.private-theme [class*="border-white/"] {
+  border-color: var(--private-border);
+}
+
+.private-theme [class*="hover:border-white/"]:hover {
+  border-color: var(--private-border-hover);
+}
+
+.private-theme .bg-slate-800 {
+  background-color: var(--private-track);
+}
+
+.private-theme .form-input {
+  border-color: var(--private-input-border);
+  background: var(--private-input);
+  color: var(--private-heading);
+}
+
+.private-theme .form-input:hover {
+  border-color: var(--private-input-border-hover);
+}
+
+.private-theme .form-input:focus {
+  border-color: #10b981;
+  background: var(--private-input-focus);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
