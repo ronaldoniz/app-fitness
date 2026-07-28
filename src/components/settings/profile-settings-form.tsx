@@ -80,6 +80,7 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
         <select
           className="form-input"
           defaultValue={profile.themePreference}
+          key={profile.themePreference}
           name="themePreference"
           required
         >
