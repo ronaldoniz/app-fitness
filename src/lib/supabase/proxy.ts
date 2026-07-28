@@ -34,8 +34,8 @@ export async function updateSupabaseSession(
   request: NextRequest,
 ): Promise<NextResponse> {
   let response = NextResponse.next({ request });
-  const { url, publishableKey } = readSupabasePublicEnvironment();
-  const client = createServerClient<Database>(url, publishableKey, {
+  const { url, anonKey } = readSupabasePublicEnvironment();
+  const client = createServerClient<Database>(url, anonKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();

@@ -1,6 +1,6 @@
 export interface SupabasePublicEnvironment {
   url: string;
-  publishableKey: string;
+  anonKey: string;
 }
 
 type PublicEnvironment = {
@@ -11,12 +11,11 @@ export function readSupabasePublicEnvironment(
   environment: PublicEnvironment = process.env,
 ): SupabasePublicEnvironment {
   const url = environment.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const publishableKey =
-    environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
+  const anonKey = environment.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
   const missingVariables = [
     !url && "NEXT_PUBLIC_SUPABASE_URL",
-    !publishableKey && "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    !anonKey && "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   ].filter(Boolean);
 
   if (missingVariables.length > 0) {
@@ -27,6 +26,6 @@ export function readSupabasePublicEnvironment(
 
   return {
     url: url as string,
-    publishableKey: publishableKey as string,
+    anonKey: anonKey as string,
   };
 }

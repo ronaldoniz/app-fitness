@@ -7,17 +7,17 @@ describe("readSupabasePublicEnvironment", () => {
     expect(
       readSupabasePublicEnvironment({
         NEXT_PUBLIC_SUPABASE_URL: " https://example.supabase.co ",
-        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: " publishable-key ",
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: " anon-key ",
       }),
     ).toEqual({
       url: "https://example.supabase.co",
-      publishableKey: "publishable-key",
+      anonKey: "anon-key",
     });
   });
 
   it("reports every missing setting without exposing values", () => {
     expect(() => readSupabasePublicEnvironment({})).toThrow(
-      "NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+      "NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY",
     );
   });
 });

@@ -100,7 +100,26 @@ Variáveis esperadas:
 
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+APP_URL=http://localhost:3000
+```
+
+Preencha `.env.local` com os valores correspondentes ao ambiente escolhido:
+
+- **Supabase local:** execute `npx supabase status -o env` depois de iniciar o
+  stack. Use o valor de `API_URL` em `NEXT_PUBLIC_SUPABASE_URL` e o valor de
+  `ANON_KEY` em `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Mantenha
+  `APP_URL=http://localhost:3000`.
+- **Projeto hospedado:** use a URL exibida em **Integrations > Data API** no
+  Dashboard e a chave `anon` disponível em **Settings > API Keys > Legacy API
+  Keys**. Em desenvolvimento local, mantenha
+  `APP_URL=http://localhost:3000`.
+
+Exemplo para o stack local padrão:
+
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<valor de ANON_KEY>
 APP_URL=http://localhost:3000
 ```
 
@@ -151,15 +170,86 @@ Para preparar uma instância local sem credenciais reais:
 ```bash
 npx supabase start
 npx supabase db reset
+npx supabase status -o env
 ```
 
 O repositório já inclui `supabase/config.toml` com confirmação de e-mail
 habilitada, URL local e somente autenticação por e-mail e senha. A interface de
 e-mails do ambiente local é informada pelo comando `npx supabase status`.
 
-Use a URL e a chave publicável exibidas pelo ambiente local apenas no seu
+Use a URL e a chave `anon` exibidas pelo ambiente local apenas no seu
 `.env.local`. `supabase db reset` recria o banco local e reaplica as migrations;
 não o execute contra um banco com dados que precisem ser preservados.
+
+### Aplicação das migrations
+
+No ambiente local, `npx supabase db reset` recria o banco e aplica, em ordem,
+todos os arquivos de `supabase/migrations/`.
+
+Para um projeto hospedado, obtenha o identificador em **Project Settings >
+General**, autentique a CLI e revise o plano antes de aplicar:
+
+```bash
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase db push --dry-run
+npx supabase db push
+```
+
+O token da CLI e a senha do banco não devem ser gravados em `.env.local`, no
+README ou em qualquer arquivo versionado.
+
+Depois da aplicação, execute
+[`supabase/verification.sql`](supabase/verification.sql) no SQL Editor. O
+resultado esperado é:
+
+- `profiles`, `weigh_ins` e `goals` existentes com RLS habilitado;
+- constraints para propriedade, valores positivos, datas não futuras,
+  unicidade de pesagem por usuário/data e estado de conclusão das metas;
+- índice parcial `goals_one_active_per_user_idx`;
+- triggers de identidade, `updated_at`, validação/conclusão de metas e
+  reavaliação após alterações em pesagens;
+- funções públicas `complete_onboarding`, `activate_goal`,
+  `move_pending_goal` e `delete_own_account` executáveis somente por
+  `authenticated`;
+- funções auxiliares no schema `private` sem execução por `anon` ou
+  `authenticated`;
+- nenhuma permissão de tabela para `anon` e permissões restritas para
+  `authenticated`, inclusive por coluna em `goals`;
+- políticas RLS de propriedade para todas as operações permitidas: seleção,
+  alteração e exclusão em `profiles`, cuja criação ocorre somente pela função
+  de onboarding; e seleção, criação, alteração e exclusão em `weigh_ins` e
+  `goals`.
+
+### Validação integrada
+
+Com o stack local iniciado e `.env.local` preenchido:
+
+1. Execute `npm run dev` e abra `http://localhost:3000`.
+2. Cadastre um usuário descartável A. Abra a interface de e-mail indicada por
+   `npx supabase status`, confirme a conta e conclua o onboarding.
+3. Valide login, logout, persistência da sessão e recuperação de senha pelo
+   e-mail capturado localmente.
+4. Crie, edite e exclua pesagens; confirme duplicidade por data, datas futuras,
+   valores positivos e conclusão da meta pelo peso cronologicamente mais
+   recente.
+5. Crie, edite, ordene e ative metas. Confirme meta ativa única e bloqueio de
+   edição/reativação de metas concluídas.
+6. Altere nome, altura, peso inicial e os três temas. Confirme que pesagens não
+   são modificadas.
+7. Baixe CSV e JSON. Confirme que o CSV contém somente pesagens e que o JSON
+   contém perfil, pesagens e metas, sem tokens ou dados internos do Auth.
+8. Cadastre um usuário descartável B e confirme que Dashboard, Histórico,
+   Metas e exportações não mostram dados do usuário A. Tentativas diretas de
+   consultar IDs pertencentes a A com a sessão de B devem retornar zero linhas
+   ou erro de autorização.
+9. Exclua as duas contas descartáveis pela interface e confirme que as sessões
+   foram encerradas e que não restaram registros funcionais associados.
+
+Esses testes exigem um Supabase local em execução ou um projeto hospedado
+configurado. Os testes automatizados do repositório validam regras puras e o
+contrato das migrations, mas não substituem a execução integrada contra
+PostgreSQL, Auth e o serviço de e-mail.
 
 ### Configuração do Supabase Auth
 
@@ -193,12 +283,13 @@ Next.js e cadastre no ambiente de produção:
 
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=https://<projeto>.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<chave-publicavel>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<chave-anon>
 APP_URL=https://<dominio-da-aplicacao>
 ```
 
-Use somente a chave publicável nas variáveis `NEXT_PUBLIC_*`. Não cadastre uma
-chave `service_role` no frontend. Antes de publicar, configure a mesma origem
+Use somente a chave `anon` solicitada pela configuração desta versão nas
+variáveis `NEXT_PUBLIC_*`. Não cadastre uma chave `service_role` no frontend.
+Antes de publicar, configure a mesma origem
 de `APP_URL` como `Site URL` e URL de redirecionamento no Supabase Auth, aplique
 as migrations ao projeto remoto e execute todos os comandos da seção
 Qualidade. Estes passos são apenas documentação: este repositório continua sem
