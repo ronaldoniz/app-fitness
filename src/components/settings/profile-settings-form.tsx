@@ -1,16 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import { initialFormActionState } from "@/auth/form-state";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
-import type { Profile } from "@/domain";
+import type { Profile, ThemePreference } from "@/domain";
 import { updateProfileSettingsAction } from "@/settings/actions";
 
 export function ProfileSettingsForm({ profile }: { profile: Profile }) {
   const router = useRouter();
+  const [selectedTheme, setSelectedTheme] = useState<ThemePreference>(
+    profile.themePreference,
+  );
+  const submittedTheme = useRef(profile.themePreference);
   const [state, action] = useActionState(
     updateProfileSettingsAction,
     initialFormActionState,
@@ -18,12 +22,21 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
 
   useEffect(() => {
     if (state.status === "success") {
+      document
+        .querySelector<HTMLElement>(".private-theme")
+        ?.setAttribute("data-theme", submittedTheme.current);
       router.refresh();
     }
   }, [router, state]);
 
   return (
-    <form action={action} className="grid gap-6">
+    <form
+      action={action}
+      className="grid gap-6"
+      onSubmit={() => {
+        submittedTheme.current = selectedTheme;
+      }}
+    >
       <FormMessage state={state} />
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -79,10 +92,12 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
         Preferência de tema
         <select
           className="form-input"
-          defaultValue={profile.themePreference}
-          key={profile.themePreference}
           name="themePreference"
+          onChange={(event) => {
+            setSelectedTheme(event.currentTarget.value as ThemePreference);
+          }}
           required
+          value={selectedTheme}
         >
           <option value="dark">Escuro</option>
           <option value="light">Claro</option>

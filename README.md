@@ -73,7 +73,9 @@ As Fases 1 a 10 contêm:
   PWA.
 - Testes unitários e verificações estáticas do contrato da migration.
 
-Não há credenciais reais nem deploy configurado.
+A aplicação está publicada em
+`https://app-fitness-umbrion.vercel.app`. Credenciais e valores de ambiente
+permanecem fora do repositório.
 
 ## Pré-requisitos
 
@@ -280,24 +282,20 @@ integrada confirmou cadastro, login, uso do aplicativo e exportações CSV e JSO
 com dados reais de teste.
 
 Durante essa validação, a confirmação de e-mail foi desativada temporariamente
-porque o provedor de Auth bloqueou o envio por excesso de solicitações. Essa é
-uma exceção operacional exclusiva do teste: **reative `Confirm email` antes de
-qualquer deploy** para manter a aderência ao SRS. Depois de reativá-la, use uma
-caixa postal de teste real para repetir os fluxos de confirmação e recuperação
-de senha.
+porque o provedor de Auth bloqueou o envio por excesso de solicitações. Depois
+da validação, `Confirm email` foi reativado. Os fluxos reais de confirmação e
+recuperação de senha foram homologados em produção.
 
-O `Site URL` ainda não está configurado no projeto hospedado. Antes do deploy,
-configure-o com a origem de `APP_URL` e mantenha essa origem na lista de
-redirects; sem isso, os callbacks de confirmação e recuperação não podem ser
-homologados de forma confiável.
+O `Site URL` do Supabase Auth está configurado com a origem de produção, e a
+lista de redirects inclui o ambiente local, os callbacks de produção e previews
+da Vercel.
 
-Nenhuma credencial do projeto remoto é versionada e nenhum deploy é realizado
-nesta fase.
+Nenhuma credencial do projeto remoto é versionada.
 
-### Preparação futura da Vercel
+### Configuração da Vercel
 
-Quando o deploy for autorizado, importe o repositório na Vercel como projeto
-Next.js e cadastre no ambiente de produção:
+O projeto está publicado na Vercel como aplicação Next.js. O ambiente de
+produção exige:
 
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL=https://<projeto>.supabase.co
@@ -307,11 +305,9 @@ APP_URL=https://<dominio-da-aplicacao>
 
 Use somente a chave `anon` solicitada pela configuração desta versão nas
 variáveis `NEXT_PUBLIC_*`. Não cadastre uma chave `service_role` no frontend.
-Antes de publicar, configure a mesma origem
-de `APP_URL` como `Site URL` e URL de redirecionamento no Supabase Auth, aplique
-as migrations ao projeto remoto e execute todos os comandos da seção
-Qualidade. Estes passos são apenas documentação: este repositório continua sem
-projeto remoto vinculado e sem deploy realizado.
+Mantenha a origem de `APP_URL` como `Site URL` e URL de redirecionamento no
+Supabase Auth. As migrations do repositório já foram aplicadas ao projeto
+hospedado e `supabase/verification.sql` foi executado.
 
 ## Execução
 
